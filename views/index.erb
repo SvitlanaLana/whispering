@@ -1,6 +1,26 @@
-<form action="/messages" method="POST">
-  <intput type="hidden" name="_method" value="POST"/>
-  <input type="text" name="message[text]"/>
-  <input type="submit" value="save">
+<form action="/messages" method="POST" id="message_form">
+	<intput type="hidden" name="_method" value="POST"/>
+	<p>
+    <label for="message[text]">Message:</label>
+ 		<input type="text" name="message[text]" id="message_text"/>
+	</p>
+	<p><b>Password:</b><br>
+   		<input type="text" name="password"/>
+  </p>
+	<p> 
+		<input type="radio" name = "timer">Deadline
+		<input type="number" name="message[deadline]"/>
+	</p>
+	<p> 
+		<input type="radio" name = "timer">First link visit
+	</p>
+	<input type="submit" value="save">
+
 </form>
-<h4>asdas</h4>
+
+<% if message_creation_result == 'message_createion_failure' %>
+Some bad message
+<% elsif message_creation_result == 'new_message' %>
+Link to your message <a href='<%= url("/messages/#{session['new_message_key']}") %>'>new message</a>
+<% end %>
+<script src="/js/index.js"></script>

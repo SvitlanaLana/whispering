@@ -11,13 +11,16 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20161003213724) do
+ActiveRecord::Schema.define(:version => 20161012153001) do
 
   create_table "messages", :id => false, :force => true do |t|
-    t.string   "key",        :null => false
+    t.string   "key",                           :null => false
     t.string   "text"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "left_shows", :default => -1
+    t.integer  "deadline",   :default => -1
+    t.boolean  "choice",     :default => false
   end
 
   add_index "messages", ["key"], :name => "index_messages_on_key", :unique => true
