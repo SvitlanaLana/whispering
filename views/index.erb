@@ -1,8 +1,9 @@
-<form action="/messages" method="POST" id="message_form" xmlns="http://www.w3.org/1999/html">
+<form action="/messages" method="POST" id="message_form">
 	<input type="hidden" name="_method" value="POST"/>
+    <input type="hidden" name="message[text]" id="hidden_text">
 	<p>
-        <label for="message[text]">Message:</label>
- 		<textarea type="text" name="message[text]" id="message_text"/> </textarea>
+        <label>Message:</label>
+ 		<textarea type="text" id="message_text"></textarea>
 	</p>
     <p>Use at least 1 symbol till 16.</p>
     <p id="wrong_pass_tip" class="hide">Your pass is invalid. Enter another one.</p>
@@ -21,9 +22,14 @@
 	<input type="submit" value="save">
 </form>
 
-<% if message_creation_result == 'message_creation_failure' %>
-Some bad message
-<% elsif message_creation_result == 'new_message' %>
-Link to your message <a href='<%= url("/messages/#{session['new_message_key']}") %>'>new message</a>
+<% if bad_message? %>
+    Some bad message
+<% elsif message_saved? %>
+    <p>
+      Link to your message: <a id="new_message_url" href='<%= url("/messages/#{new_message_key}") %>'>new message</a>
+    </p>
+    <p>
+      Or <button id="copy_button">Copy</button> the link.
+    </p>
 <% end %>
 <script src="/js/index.js"></script>

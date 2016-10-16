@@ -4,9 +4,9 @@ require 'active_record'
 require "sinatra/activerecord"
 # require 'yaml'
 
-Bundler.require
-
 RACK_ENV ||= ENV['RACK_ENV'] || "development"
+
+Bundler.require
 
 require './config/environments'
 
@@ -16,9 +16,8 @@ require './config/environments'
 Dir.mkdir('log') if !File.exist?('log') || !File.directory?('log')
 ActiveRecord::Base.logger = Logger.new(File.open("log/#{RACK_ENV}.log", 'a+'))
 
-Dir['models/**/*.rb'].each do |path|
+(Dir['models/**/*.rb'] + Dir['workers/**/*.rb']).each do |path|
   require_relative path
 end
-
 
 require './app.rb'

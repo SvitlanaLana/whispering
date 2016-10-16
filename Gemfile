@@ -4,6 +4,7 @@ gem 'rake'
 gem 'sinatra'
 gem 'activerecord', "< 5.0.0"
 gem 'sinatra-activerecord'
+gem 'sidekiq'
 
 group :development, :test do
   gem 'sqlite3'

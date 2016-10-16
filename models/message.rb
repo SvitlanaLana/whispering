@@ -5,6 +5,7 @@ class Message < ActiveRecord::Base
 
   before_create :create_key, :validate_expiration
   after_save :delete_if_expired
+  after_create :launch_worker
 
   def self.fetch(id)
     message = Message.where(key: id).first
@@ -25,13 +26,17 @@ class Message < ActiveRecord::Base
 
   private
 
+  def launch_worker
+    return if count_deadline?
+    MessageCleanWorker.perform_in(deadline.hours, key)
+  end
+
   def delete_if_expired
     return if time_deadline? || left_shows > 0
     destroy
   end
 
   def validate_expiration
-    #binding.pry
     if left_shows < 1 && deadline < 1
       errors[:deadline] = 'Cant both expiration type be turned off'
     end
@@ -39,7 +44,7 @@ class Message < ActiveRecord::Base
 
   def create_key
     new_key = nil
-    new_key = SecureRandom.hex(8) while new_key.nil? || Message.exists?(new_key)
+    new_key = SecureRandom.hex(12) while new_key.nil? || Message.exists?(new_key)
     self.key = new_key
   end
 end

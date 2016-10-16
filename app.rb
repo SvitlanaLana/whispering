@@ -2,8 +2,8 @@ require 'sinatra/base'
 
 class App < Sinatra::Base
   register Sinatra::ActiveRecordExtension
-  use Rack::Session::Pool, expire_after: 2
-  set :session_secret, 'super secret'
+  #use Rack::Session::Pool, expire_after: 1
+  #set :session_secret, 'super secret'
   set :public_folder, 'public'
 
   get '/' do
@@ -12,13 +12,14 @@ class App < Sinatra::Base
 
   post '/messages' do
     @message = Message.create(message_params(params))
+    flash = {}
     if @message.errors.empty?
-      session['new_message_key'] = @message.key
-      session['result'] = 'new_message'
+      flash['new_message_key'] = @message.key
     else
-      session['result'] = 'message_creation_failure'
+      flash['error'] = 'message_creation_failure'
     end
-    redirect('/')
+    #redirect('/')
+    redirect("/#{form_get_query(flash)}")
   end
 
   get '/messages/:key' do
@@ -34,11 +35,15 @@ class App < Sinatra::Base
   private
 
   def new_message_key
-    session['new_message_key']
+    params['new_message_key']
   end
 
-  def message_creation_result
-    session['result']
+  def message_saved?
+    new_message_key
+  end
+
+  def bad_message?
+    !params['error'].nil?
   end
 
   def message_params(params)
@@ -47,5 +52,10 @@ class App < Sinatra::Base
       hash['left_shows'] = hash.delete('deadline')
     end
     hash
+  end
+
+  def form_get_query(hash)
+    str = hash.map { |k, v| "#{k}=#{v}" }.join('&')
+    return '?' + str unless str.empty?
   end
 end
