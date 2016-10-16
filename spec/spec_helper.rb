@@ -8,10 +8,12 @@ require 'capybara'
 require 'capybara/rspec'
 require 'rspec'
 require 'database_cleaner'
+require 'capybara-webkit'
 
 DatabaseCleaner.strategy = :transaction
 
 Capybara.app = App
+Capybara.javascript_driver = :webkit
 
 RSpec.configure do |config|
   config.include Capybara::DSL
