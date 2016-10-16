@@ -2,18 +2,12 @@ require 'sinatra/base'
 
 class App < Sinatra::Base
   register Sinatra::ActiveRecordExtension
-  use Rack::Session::Pool, expire_after: 60
+  use Rack::Session::Pool, expire_after: 2
   set :session_secret, 'super secret'
   set :public_folder, 'public'
 
   get '/' do
-    #binding.pry
     erb :index
-  end
-
-  get '/hello/:name' do
-    "Hello #{params[:name]}"
-
   end
 
   post '/messages' do
@@ -22,14 +16,19 @@ class App < Sinatra::Base
       session['new_message_key'] = @message.key
       session['result'] = 'new_message'
     else
-      session['result'] = 'message_createion_failure'
+      session['result'] = 'message_creation_failure'
     end
     redirect('/')
   end
 
   get '/messages/:key' do
-    @message = Message.find(params[:key])
-    erb :show
+    @message = Message.fetch(params[:key])
+    if @message
+      erb :show
+    else
+      status 404
+      erb :oops
+    end
   end
 
   private
@@ -43,6 +42,10 @@ class App < Sinatra::Base
   end
 
   def message_params(params)
-    params['message'].slice('text', 'deadline')
+    hash = params['message'].slice('text', 'deadline')
+    if params['message']['deadline_type'] == 'count'
+      hash['left_shows'] = hash.delete('deadline')
+    end
+    hash
   end
 end

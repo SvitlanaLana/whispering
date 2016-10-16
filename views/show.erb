@@ -1,1 +1,15 @@
-<p> <%= @message.text %> </p>
+<p id="decoded_area">
+  Waiting on password...
+</p>
+<p>
+  <label for="password">Please, enter password</label>
+  <input type="text" id="password" name="password">
+  <button id="decode_button">Decode</button>
+</p>
+<script>
+    var text = "<%= @message.text %>";
+    $('#decode_button').click(function(e){
+        var pass = $('#password').val();
+        $('#decoded_area').text(decrypt(text, pass))
+    });
+</script>
