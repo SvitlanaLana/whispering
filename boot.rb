@@ -1,12 +1,14 @@
 require 'rubygems'
 require 'bundler'
+require 'active_record'
+require "sinatra/activerecord"
 # require 'yaml'
 
 Bundler.require
 
 RACK_ENV ||= ENV['RACK_ENV'] || "development"
 
-require 'config/environments'
+require './config/environments'
 
 # db_config = YAML.load(ERB.new(File.read('config/database.yml')).result)
 # ActiveRecord::Base.establish_connection db_config[RACK_ENV]

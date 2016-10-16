@@ -4,15 +4,15 @@ require 'sinatra/activerecord/rake'
 namespace :heroku do
   task deploy: %i(push migrate)
 
-  task :push do
-    sh 'git push heroku master'
+  task :push, [:arg1] do |t, args|
+    sh "git push heroku master #{args[:arg1]}"
   end
 
   task :migrate do
-    sh 'heroku run rake db:migrate'
+    sh 'heroku run bundle exec rake db:migrate'
   end
 
   task :console do
-    sh 'heroku run rails console'
+    sh 'heroku run bin/console'
   end
 end
