@@ -1,14 +1,17 @@
 source 'https://rubygems.org'
 
-gem 'sqlite3'
 gem 'rake'
 gem 'sinatra'
 gem 'sinatra-activerecord'
 gem 'activerecord', "~>3.2.17"
 
-group :development do
+group :development, :test do
+  gem 'sqlite3'
   gem 'pry'
   gem 'pry-byebug'
+end
+
+group :development do
 end
 
 group :test do
@@ -18,3 +21,9 @@ group :test do
   gem 'database_cleaner'
 end
 
+group :production do
+  gem 'pg'
+  gem 'unicorn'
+end
+
+ruby "2.1.2"
